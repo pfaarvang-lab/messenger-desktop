@@ -1,0 +1,40 @@
+{
+  "name": "messenger-desktop",
+  "version": "1.1.0",
+  "description": "Facebook Messenger Desktop App",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dist": "./build-dmg.sh"
+  },
+  "build": {
+    "appId": "com.messenger.desktop",
+    "productName": "Messenger",
+    "mac": {
+      "category": "public.app-category.social-networking",
+      "icon": "assets/icon.png",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "universal"
+          ]
+        }
+      ],
+      "identity": null,
+      "artifactName": "Messenger-${version}.${ext}"
+    },
+    "dmg": {
+      "title": "Messenger"
+    },
+    "files": [
+      "main.js",
+      "assets/**/*",
+      "package.json"
+    ]
+  },
+  "devDependencies": {
+    "electron": "^45.4.1",
+    "electron-builder": "^26.18.0"
+  }
+}

@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#A855F7"/>
+      <stop offset="50%" style="stop-color:#6366F1"/>
+      <stop offset="100%" style="stop-color:#3B82F6"/>
+    </linearGradient>
+  </defs>
+  <!-- Background circle -->
+  <circle cx="512" cy="512" r="512" fill="url(#bg)"/>
+  <!-- Messenger lightning bolt logo -->
+  <path d="M512 140C305 140 140 291 140 480c0 108 54 204 138 268v130l119-66c32 9 66 14 115 14 207 0 372-151 372-346C884 291 719 140 512 140zm38 466l-95-101-185 101 204-216 97 101 183-101L550 606z" fill="white"/>
+</svg>

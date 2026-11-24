@@ -1,0 +1,28 @@
+MESSENGER TIL MAC – INSTALLATION
+================================
+
+Virker på alle Macs (M-chip og Intel) med macOS 12 eller nyere.
+
+1. Dobbeltklik på Messenger-x.x.x.dmg
+2. Træk Messenger-ikonet over i mappen "Programmer" (Applications)
+3. Åbn Messenger fra Programmer
+
+FØRSTE GANG: macOS viser en advarsel om, at appen ikke kan bekræftes
+(den er ikke købt gennem App Store). Gør sådan:
+
+  a) Klik "OK" / "Udført" i advarslen (IKKE "Flyt til papirkurv")
+  b) Åbn Systemindstillinger → Anonymitet & sikkerhed
+  c) Rul ned og klik "Åbn alligevel" ud for Messenger
+  d) Bekræft med din adgangskode / Touch ID
+
+Det skal kun gøres én gang.
+
+Hvis Macen i stedet siger at appen er "beskadiget", så åbn Terminal og kør:
+  xattr -cr /Applications/Messenger.app
+og åbn appen igen.
+
+BRUG
+- Log ind med din Facebook/Messenger-konto første gang – login sendes
+  direkte til Facebook.
+- Rød luk-knap skjuler vinduet; du får stadig notifikationer og badge.
+- Cmd+Q lukker appen helt.

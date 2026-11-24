@@ -1,0 +1,67 @@
+name: Byg og udgiv Messenger
+
+on:
+  push:
+    tags: ['v*']          # manuel udgivelse: git tag v1.2.0 && git push --tags
+  schedule:
+    - cron: '17 5 * * 1'  # hver mandag: tjek om Electron har en ny version
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bump:
+    if: github.event_name != 'push'
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.bump.outputs.tag }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - id: bump
+        run: |
+          CUR=$(node -p "require('./package-lock.json').packages['node_modules/electron'].version")
+          LATEST=$(npm view electron version)
+          echo "Electron nu: $CUR – nyeste: $LATEST"
+          if [ "$CUR" = "$LATEST" ]; then echo "Ingen opdatering nødvendig"; exit 0; fi
+          npm install --save-dev "electron@$LATEST" --package-lock-only --ignore-scripts
+          npm version patch --no-git-tag-version
+          VER=$(node -p "require('./package.json').version")
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git commit -am "Electron $LATEST – v$VER"
+          git tag "v$VER"
+          git push origin HEAD --tags
+          echo "tag=v$VER" >> "$GITHUB_OUTPUT"
+
+  build:
+    needs: bump
+    if: always() && (github.event_name == 'push' || needs.bump.outputs.tag != '')
+    runs-on: macos-latest
+    env:
+      TAG: ${{ github.event_name == 'push' && github.ref_name || needs.bump.outputs.tag }}
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ env.TAG }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: npm ci
+      - name: Byg universal app
+        run: npx electron-builder --mac dir --universal --publish never
+      - name: Ad-hoc-signér
+        run: node build/adhoc-sign.js "$(find dist -maxdepth 2 -name Messenger.app | head -1)"
+      - name: Pak .dmg
+        run: npx electron-builder --mac dmg --universal --prepackaged "$(find dist -maxdepth 2 -name Messenger.app | head -1)" --publish never
+      - uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ env.TAG }}
+          name: Messenger ${{ env.TAG }}
+          files: |
+            dist/*.dmg
+            Installationsvejledning.txt
