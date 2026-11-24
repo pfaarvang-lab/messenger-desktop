@@ -16,6 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       tag: ${{ steps.bump.outputs.tag }}
+      ref: ${{ steps.bump.outputs.ref }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -26,7 +27,15 @@ jobs:
           CUR=$(node -p "require('./package-lock.json').packages['node_modules/electron'].version")
           LATEST=$(npm view electron version)
           echo "Electron nu: $CUR – nyeste: $LATEST"
-          if [ "$CUR" = "$LATEST" ]; then echo "Ingen opdatering nødvendig"; exit 0; fi
+          if [ "$CUR" = "$LATEST" ]; then
+            echo "Ingen ny Electron-version"
+            # Manuel kørsel uden Electron-opdatering: udgiv den nuværende version
+            if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+              echo "tag=v$(node -p "require('./package.json').version")" >> "$GITHUB_OUTPUT"
+              echo "ref=${{ github.sha }}" >> "$GITHUB_OUTPUT"
+            fi
+            exit 0
+          fi
           npm install --save-dev "electron@$LATEST" --package-lock-only --ignore-scripts
           npm version patch --no-git-tag-version
           VER=$(node -p "require('./package.json').version")
@@ -36,6 +45,7 @@ jobs:
           git tag "v$VER"
           git push origin HEAD --tags
           echo "tag=v$VER" >> "$GITHUB_OUTPUT"
+          echo "ref=v$VER" >> "$GITHUB_OUTPUT"
 
   build:
     needs: bump
@@ -47,7 +57,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: ${{ env.TAG }}
+          ref: ${{ github.event_name == 'push' && github.ref || needs.bump.outputs.ref }}
       - uses: actions/setup-node@v4
         with:
           node-version: 22
@@ -61,6 +71,7 @@ jobs:
       - uses: softprops/action-gh-release@v2
         with:
           tag_name: ${{ env.TAG }}
+          target_commitish: ${{ github.event_name == 'push' && github.sha || needs.bump.outputs.ref }}
           name: Messenger ${{ env.TAG }}
           files: |
             dist/*.dmg
