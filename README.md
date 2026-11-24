@@ -5,7 +5,7 @@ Uofficiel – ikke tilknyttet Meta.
 
 ## Download
 Hent nyeste `.dmg` under **[Releases](../../releases/latest)** og følg `Installationsvejledning.txt`.
-Virker på M-chip og Intel, macOS 12+.
+Virker på M-chip og Intel, macOS 13+.
 
 ## Funktioner
 - Egen app i Dock med badge for ulæste beskeder

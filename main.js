@@ -62,8 +62,8 @@ function createWindow() {
       sandbox: true,
       webSecurity: true,
       partition: 'persist:messenger',
-      // Skjult vindue skal stadig opdatere badge/notifikationer hurtigt
-      backgroundThrottling: false,
+      // OBS: backgroundThrottling må IKKE slås fra – så tror Messenger at siden
+      // altid er synlig og viser hverken ulæst-tæller eller notifikationer.
     },
     icon: path.join(__dirname, 'assets', 'icon.png'),
   });

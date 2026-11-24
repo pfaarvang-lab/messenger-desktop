@@ -1,7 +1,7 @@
 MESSENGER TIL MAC – INSTALLATION
 ================================
 
-Virker på alle Macs (M-chip og Intel) med macOS 12 eller nyere.
+Virker på alle Macs (M-chip og Intel) med macOS 13 (Ventura) eller nyere.
 
 1. Dobbeltklik på Messenger-x.x.x.dmg
 2. Træk Messenger-ikonet over i mappen "Programmer" (Applications)
